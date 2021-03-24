@@ -24,11 +24,33 @@ func Open(path string) (TorrentFile, error) {
 		return TorrentFile{}, err
 	}
 	defer file.Close()
-	torrentMeta, err := bencodeUtils.Open(file)
 
+	torrentMeta, err := bencodeUtils.Open(file)
 	if err != nil {
 		log.Fatalln("Parsing torrent file content failed")
 		return TorrentFile{}, err
 	}
-	return torrentMeta
+
+	infoHash, err := torrentMeta.Info.Hash()
+	if err != nil {
+		log.Fatalln("Extracting torrent hash failed")
+		return TorrentFile{}, err
+	}
+
+	pieceHashes, err := torrentMeta.Info.SplitPieceHashes()
+	if err != nil {
+		log.Fatalln("Extracting hashes of blocks failed")
+		return TorrentFile{}, err
+	}
+
+	// store in flatter struct for ease of use
+	t := TorrentFile{
+		Announce:    torrentMeta.Announce,
+		InfoHash:    infoHash,
+		PieceHashes: pieceHashes,
+		PieceLength: torrentMeta.Info.PieceLength,
+		Length:      torrentMeta.Info.Length,
+		Name:        torrentMeta.Info.Name,
+	}
+	return t, nil
 }
