@@ -9,26 +9,22 @@ import (
 	"github.com/jackpal/bencode-go"
 )
 
-type bencodeInfo struct {
-	Pieces      string
-	PieceLength int
-	Length      int
-	Name        string
-}
-
-type bencodeTorrent struct {
-	Announce string
-	Info     bencodeInfo
-}
-
-// parses a torrent file
-func Open(r io.Reader) (*bencodeTorrent, error) {
-	bto := bencodeTorrent{}
-	err := bencode.Unmarshal(r, &bto)
+func ParseTorrent(r io.Reader) (*bencodeTorrent, error) {
+	tor := bencodeTorrent{}
+	err := bencode.Unmarshal(r, &tor)
 	if err != nil {
 		return nil, err
 	}
-	return &bto, nil
+	return &tor, nil
+}
+
+func ParseTrackerResp(r io.Reader) (*trackerResponse, error) {
+	res := trackerResponse{}
+	err := bencode.Unmarshal(r, &res)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 func (i *bencodeInfo) Hash() ([20]byte, error) {
