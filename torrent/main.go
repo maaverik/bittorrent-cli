@@ -1,19 +1,21 @@
 package torrent
 
 import (
+	"crypto/rand"
 	"log"
 	"os"
 
 	"github.com/maaverik/torrent-client/bencodeUtils"
+	"github.com/maaverik/torrent-client/swarm"
 )
 
 // TorrentFile holds the metadata from a .torrent file, parsed from bencode
 type TorrentFile struct {
 	TrackerBaseURL string
-	InfoHash       [20]byte
-	PieceHashes    [][20]byte
-	PieceLength    int
-	Length         int
+	InfoHash       [20]byte   // trakcer uses to identify file
+	PieceHashes    [][20]byte // integrity check of pieces
+	PieceLength    int        // size of each piece
+	Length         int        // size of file
 	Name           string
 }
 
@@ -58,5 +60,39 @@ func Deserialize(path string) (TorrentFile, error) {
 }
 
 func (t *TorrentFile) DownloadToFile(path string) error {
+	var peerID [20]byte
+	_, err := rand.Read(peerID[:]) // use a random ID to identify ourselves to tracker
+	if err != nil {
+		return err
+	}
 
+	peers, err := t.requestForPeers(peerID, Port)
+	if err != nil {
+		return err
+	}
+
+	torrent := swarm.DownloadMeta{
+		Peers:       peers,
+		PeerID:      peerID,
+		InfoHash:    t.InfoHash,
+		PieceHashes: t.PieceHashes,
+		PieceSize:   t.PieceLength,
+		FileSize:    t.Length,
+		Name:        t.Name,
+	}
+	buf, err := torrent.Download()
+	if err != nil {
+		return err
+	}
+
+	outFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
+	_, err = outFile.Write(buf)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -21,12 +21,12 @@ func main() {
 		log.Fatalln("Please pass the path to store the output file as the second command line argument")
 	}
 
-	meta, err := torrent.Deserialize(inPath)
+	tor, err := torrent.Deserialize(inPath)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	err = meta.DownloadToFile(outPath)
+	err = tor.DownloadToFile(outPath)
 	if err != nil {
 		log.Fatalln("Download Failed")
 		log.Fatalln(err)
