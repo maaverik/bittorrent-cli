@@ -13,7 +13,7 @@ const MaxBlockSize = 16384
 const MaxBacklog = 5
 
 // download a piece as many blocks in a pipelined fashion for efficiency
-func attemptDownload(w worker.Worker, piece *pieceOfWork) ([]byte, error) {
+func attemptDownload(w *worker.Worker, piece *pieceOfWork) ([]byte, error) {
 	state := progressTracker{
 		index:  piece.index,
 		worker: w,

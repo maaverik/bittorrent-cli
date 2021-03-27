@@ -31,10 +31,10 @@ func (meta *DownloadMeta) startDownloadWorker(peer peers.Peer, workQueue chan *p
 		log.Printf("Handshake with peer %s failed\n", peer.IP)
 	}
 	log.Printf("Handshake with peer %s successful\n", peer.IP)
-	defer worker.Conn.Close()
+	defer w.Conn.Close()
 
-	w.sendUnchoke()
-	w.sendInterested()
+	w.SendUnchoke()
+	w.SendInterested()
 
 	for piece := range workQueue {
 		// if this peer doesn't have this piece, put this piece back in workQueue to retry with another
@@ -56,7 +56,7 @@ func (meta *DownloadMeta) startDownloadWorker(peer peers.Peer, workQueue chan *p
 			continue
 		}
 
-		w.sendHave(piece.index)
+		w.SendHave(piece.index)
 		results <- &pieceOfResult{piece.index, buf}
 	}
 }
