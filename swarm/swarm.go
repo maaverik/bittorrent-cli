@@ -47,6 +47,7 @@ func (meta *DownloadMeta) Download() ([]byte, error) {
 		go meta.startDownloadWorker(peer, workQueue, results)
 	}
 
+	// store result in memory -> maybe better to save peices to disk for big files
 	resultBuf := make([]byte, meta.FileSize)
 	donePieces := 0
 	for donePieces < len(meta.PieceHashes) {
