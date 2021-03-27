@@ -11,7 +11,7 @@ type progressTracker struct {
 	buf        []byte
 	downloaded int
 	requested  int
-	backlog    int
+	backlog    int // keeps track of number of blocks left to process
 }
 
 func (state *progressTracker) readMessage() error {

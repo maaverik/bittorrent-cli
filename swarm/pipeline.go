@@ -25,6 +25,7 @@ func attemptDownload(w worker.Worker, piece *pieceOfWork) ([]byte, error) {
 	w.Conn.SetDeadline(time.Now().Add(30 * time.Second))
 	defer w.Conn.SetDeadline(time.Time{}) // to disable the deadline
 
+	// state.downloaded defaults to zero since it's not provided
 	for state.downloaded < piece.length {
 		// If unchoked, send requests until we have enough unfulfilled requests
 		if !state.worker.Choked {
@@ -44,6 +45,7 @@ func attemptDownload(w worker.Worker, piece *pieceOfWork) ([]byte, error) {
 			}
 		}
 
+		// increments state.downloaded appropriately
 		err := state.readMessage()
 		if err != nil {
 			return nil, err

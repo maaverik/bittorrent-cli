@@ -29,6 +29,6 @@ func Deserialize(peersBin []byte) ([]Peer, error) {
 	return peers, nil
 }
 
-func (p Peer) String() string {
+func (p Peer) URL() string {
 	return net.JoinHostPort(p.IP.String(), strconv.Itoa(int(p.Port)))
 }
