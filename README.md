@@ -16,12 +16,6 @@ If you have the project locally, you can use
 go run . <path/to/torrent/file> <path/to/store/downloaded/file>
 ```
 
-or, if you installed the package directly, use
-
-```sh
-torrent-client <path/to/torrent/file> <path/to/store/downloaded/file>
-```
-
 ## TODO
 
 - Add support for magnet links
