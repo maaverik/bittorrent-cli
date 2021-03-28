@@ -70,6 +70,7 @@ func (t *TorrentFile) DownloadToFile(path string) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("Got %d peers\n", len(peers))
 
 	torrent := swarm.DownloadMeta{
 		Peers:       peers,

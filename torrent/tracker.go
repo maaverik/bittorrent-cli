@@ -1,6 +1,7 @@
 package torrent
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -37,6 +38,7 @@ func (t *TorrentFile) requestForPeers(peerID [20]byte, port uint16) ([]peers.Pee
 	if err != nil {
 		return nil, err
 	}
+	log.Println("Tracker URL is", url)
 	c := &http.Client{Timeout: 15 * time.Second}
 	res, err := c.Get(url)
 	if err != nil {

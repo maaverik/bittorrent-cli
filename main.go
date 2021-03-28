@@ -9,17 +9,13 @@ import (
 
 func main() {
 	// path of torrent file
+	if len(os.Args) < 2 {
+		log.Fatalln("Please pass the paths of the torrent file and location to store downloaded file as command line arguments")
+
+	}
 	inPath := os.Args[1]
 	// path to save file
 	outPath := os.Args[2]
-
-	if inPath == "" {
-		log.Fatalln("Please pass the path of the torrent file as the first command line argument")
-	}
-
-	if outPath == "" {
-		log.Fatalln("Please pass the path to store the output file as the second command line argument")
-	}
 
 	tor, err := torrent.Deserialize(inPath)
 	if err != nil {
@@ -28,7 +24,7 @@ func main() {
 
 	err = tor.DownloadToFile(outPath)
 	if err != nil {
-		log.Fatalln("Download Failed")
+		log.Println("Download Failed")
 		log.Fatalln(err)
 	}
 }

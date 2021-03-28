@@ -29,8 +29,10 @@ func (meta *DownloadMeta) startDownloadWorker(peer peers.Peer, workQueue chan *p
 	w, err := worker.New(peer, meta.PeerID, meta.InfoHash)
 	if err != nil {
 		log.Printf("Handshake with peer %s failed\n", peer.IP)
+		return
 	}
 	log.Printf("Handshake with peer %s successful\n", peer.IP)
+
 	defer w.Conn.Close()
 
 	w.SendUnchoke()

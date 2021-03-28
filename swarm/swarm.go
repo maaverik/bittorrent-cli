@@ -29,7 +29,7 @@ type pieceOfResult struct {
 }
 
 func (meta *DownloadMeta) Download() ([]byte, error) {
-	log.Println("Downloading ", meta.Name)
+	log.Println("Downloading", meta.Name)
 
 	// stores info on remaining pieces to download
 	workQueue := make(chan *pieceOfWork, len(meta.PieceHashes))
@@ -40,6 +40,8 @@ func (meta *DownloadMeta) Download() ([]byte, error) {
 		length := meta.calculatePieceSize(index)
 		workQueue <- &pieceOfWork{index, hash, length}
 	}
+
+	log.Println("Starting download workers")
 
 	// start goroutine workers, one for each peer
 	// orchestration is simplified by using common channels to communicate
